@@ -42,5 +42,10 @@
         }
       ],
       "prettier/prettier": "error"
+    },
+    "settings": {
+      "import/resolver": {
+        "typescript": {}
+      }
     }
 }
