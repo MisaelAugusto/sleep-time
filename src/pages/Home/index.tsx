@@ -1,21 +1,50 @@
-import React from 'react';
+/* eslint-disable jsx-a11y/control-has-associated-label */
+import React, { useCallback } from 'react';
 import { FiLinkedin, FiGithub, FiMail } from 'react-icons/fi';
+
+import Alarm from '../../components/Alarm';
 
 import LogoImg from '../../assets/logo.png';
 import WakeUpImg from '../../assets/wake-up.png';
 import GoToSleepImg from '../../assets/sleep.png';
+
+import Zero from '../../assets/clock/0.svg';
+import One from '../../assets/clock/1.svg';
+import Two from '../../assets/clock/2.svg';
+import Three from '../../assets/clock/3.svg';
+import Four from '../../assets/clock/4.svg';
+import Five from '../../assets/clock/5.svg';
+import Six from '../../assets/clock/6.svg';
+import Seven from '../../assets/clock/7.svg';
+import Eight from '../../assets/clock/8.svg';
+import Nine from '../../assets/clock/9.svg';
+
+import AM from '../../assets/clock/am.svg';
+import PM from '../../assets/clock/pm.svg';
 
 import {
   Logo,
   Form,
   Contact,
   Description,
-  Result,
+  Schedules,
   Options,
   Pipe
 } from './styles';
 
 const Home: React.FC = () => {
+  const handleHourClick = useCallback(() => {
+    console.log('hour');
+  }, []);
+
+  const handleMinuteClick = useCallback(() => {
+    console.log('minute');
+  }, []);
+
+  const handlePeriodClick = useCallback(() => {
+    console.log('period');
+  }, []);
+
   return (
     <>
       <Logo>
@@ -36,23 +65,30 @@ const Home: React.FC = () => {
 
         <p>at</p>
 
-        <div className="hour-minutes">
-          <select>
-            <option>01</option>
-            <option>02</option>
-          </select>
-          <p>:</p>
-          <select>
-            <option>00</option>
-            <option>05</option>
-          </select>
-          <select className="period">
-            <option>am</option>
-            <option>pm</option>
-          </select>
+        <div className="clock-buttons">
+          <button className="red" type="button" onClick={handleHourClick} />
+          <button
+            className="orange"
+            type="button"
+            onClick={handleMinuteClick}
+          />
         </div>
 
-        <button type="button">Calculate</button>
+        <div className="clock-numbers">
+          <img className="hour-left" src={Zero} alt="Hour" />
+          <img className="hour-right" src={Zero} alt="Hour" />
+          <img className="minute-left" src={Zero} alt="Minute" />
+          <img className="minute-right" src={Zero} alt="Minute" />
+          <img className="day-period" src={PM} alt="Day Period" />
+        </div>
+
+        <div className="reset-button">
+          <button className="grey" type="button" onClick={handlePeriodClick} />
+        </div>
+
+        <button className="calculate-button" type="button">
+          Calculate
+        </button>
       </Form>
       <Description>
         <p>
@@ -70,7 +106,13 @@ const Home: React.FC = () => {
           at any of these times:
         </p>
       </Description>
-      <Result />
+      <Schedules>
+        <Alarm schedule="1245" dayPeriod={1} />
+        <Alarm schedule="1245" dayPeriod={1} />
+        <Alarm schedule="1245" dayPeriod={1} />
+        <Alarm schedule="1245" dayPeriod={1} />
+        <Alarm schedule="1245" dayPeriod={1} />
+      </Schedules>
       <Contact>
         <FiGithub size={40} />
         <Pipe />
