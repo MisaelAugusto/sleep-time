@@ -16,18 +16,23 @@ import PM from '../../assets/clock/pm.svg';
 
 import { Container } from './styles';
 
-interface AlarmProps {
+export interface AlarmProps {
   schedule: string;
   dayPeriod: number;
+  isBigger?: boolean;
   className?: string;
 }
 
 const numbers = [Zero, One, Two, Three, Four, Five, Six, Seven, Eight, Nine];
 const period = [AM, PM];
 
-const Alarm: React.FC<AlarmProps> = ({ schedule, dayPeriod }) => {
+const Alarm: React.FC<AlarmProps> = ({
+  schedule,
+  dayPeriod,
+  isBigger = false
+}) => {
   return (
-    <Container>
+    <Container isBigger={isBigger}>
       <div className="hour">
         <img src={numbers[Number(schedule[0])]} alt="Hour" />
         <img src={numbers[Number(schedule[1])]} alt="Hour" />

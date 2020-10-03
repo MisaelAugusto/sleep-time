@@ -1,5 +1,6 @@
+/* eslint-disable no-param-reassign */
 /* eslint-disable jsx-a11y/control-has-associated-label */
-import React, { useCallback } from 'react';
+import React, { useCallback, useState } from 'react';
 import { FiLinkedin, FiGithub, FiMail } from 'react-icons/fi';
 
 import Alarm from '../../components/Alarm';
@@ -8,42 +9,141 @@ import LogoImg from '../../assets/logo.png';
 import WakeUpImg from '../../assets/wake-up.png';
 import GoToSleepImg from '../../assets/sleep.png';
 
-import Zero from '../../assets/clock/0.svg';
-import One from '../../assets/clock/1.svg';
-import Two from '../../assets/clock/2.svg';
-import Three from '../../assets/clock/3.svg';
-import Four from '../../assets/clock/4.svg';
-import Five from '../../assets/clock/5.svg';
-import Six from '../../assets/clock/6.svg';
-import Seven from '../../assets/clock/7.svg';
-import Eight from '../../assets/clock/8.svg';
-import Nine from '../../assets/clock/9.svg';
-
-import AM from '../../assets/clock/am.svg';
-import PM from '../../assets/clock/pm.svg';
-
 import {
   Logo,
   Form,
+  AlarmButton,
+  PeriodButton,
   Contact,
   Description,
-  Schedules,
+  Alarms,
   Options,
+  Option,
   Pipe
 } from './styles';
 
+interface Schedule {
+  schedule: string;
+  period: string;
+}
+
 const Home: React.FC = () => {
-  const handleHourClick = useCallback(() => {
-    console.log('hour');
+  const [mode, setMode] = useState('');
+  const [hours, setHours] = useState('01');
+  const [minutes, setMinutes] = useState('00');
+  const [dayPeriod, setDayPeriod] = useState('am');
+  const [buttonsPressed, setButtonsPressed] = useState([false, false, false]);
+
+  const [isErrored, setIsErrored] = useState(false);
+  const [alarms, setAlarms] = useState<Schedule[]>([]);
+
+  const handleWakeUpClick = useCallback(() => {
+    setMode('wake up');
   }, []);
+
+  const handleGoToSleepClick = useCallback(() => {
+    setMode('sleep');
+  }, []);
+
+  const handleHourClick = useCallback(() => {
+    setButtonsPressed([true, buttonsPressed[1], buttonsPressed[2]]);
+
+    const hour = Number(hours);
+
+    if (hour === 12) {
+      setHours('01');
+    } else {
+      const updatedHour = (hour + 1 < 10 ? '0' : '') + String(hour + 1);
+
+      setHours(updatedHour);
+    }
+
+    setTimeout(() => {
+      setButtonsPressed([false, buttonsPressed[1], buttonsPressed[2]]);
+    }, 200);
+  }, [hours, buttonsPressed]);
 
   const handleMinuteClick = useCallback(() => {
-    console.log('minute');
-  }, []);
+    setButtonsPressed([buttonsPressed[0], true, buttonsPressed[2]]);
+
+    const minute = Number(minutes);
+
+    if (minute === 55) {
+      setMinutes('00');
+    } else {
+      const updatedMinutes = (minute === 0 ? '0' : '') + String(minute + 5);
+
+      setMinutes(updatedMinutes);
+    }
+
+    setTimeout(() => {
+      setButtonsPressed([buttonsPressed[0], false, buttonsPressed[2]]);
+    }, 200);
+  }, [minutes, buttonsPressed]);
 
   const handlePeriodClick = useCallback(() => {
-    console.log('period');
-  }, []);
+    setButtonsPressed([buttonsPressed[0], buttonsPressed[1], true]);
+
+    if (dayPeriod === 'am') {
+      setDayPeriod('pm');
+    } else {
+      setDayPeriod('am');
+    }
+
+    setTimeout(() => {
+      setButtonsPressed([buttonsPressed[0], buttonsPressed[1], false]);
+    }, 200);
+  }, [dayPeriod, buttonsPressed]);
+
+  const handleCalculateAlarms = useCallback(() => {
+    const result: Schedule[] = [];
+    const cycles = [285, 90, 90, 90, 90];
+
+    let period = dayPeriod;
+    let totalMinutes = Number(hours) * 60 + Number(minutes);
+
+    if (mode === '') {
+      setIsErrored(true);
+      setTimeout(() => {
+        setIsErrored(false);
+      }, 500);
+      return;
+    }
+
+    cycles.forEach(cycle => {
+      if (mode === 'wake up') {
+        totalMinutes -= cycle;
+        if (totalMinutes < 0) {
+          totalMinutes = 720 + totalMinutes;
+          period = dayPeriod === 'am' ? 'pm' : 'am';
+        }
+      } else {
+        totalMinutes += cycle;
+        if (totalMinutes > 720) {
+          totalMinutes -= 720;
+          period = dayPeriod === 'am' ? 'pm' : 'am';
+        }
+      }
+
+      const h = Math.floor(totalMinutes / 60);
+      const m = totalMinutes % 60;
+
+      let schedule =
+        (h < 10 ? '0' : '') + String(h) + (m < 10 ? '0' : '') + String(m);
+
+      if (`${schedule[0]}${schedule[1]}` === '00') {
+        schedule = `12${schedule[2]}${schedule[3]}`;
+      }
+
+      result.push({ schedule, period });
+    });
+
+    if (mode === 'wake up') {
+      result.reverse();
+    }
+
+    setAlarms(result);
+  }, [mode, hours, minutes, dayPeriod]);
 
   return (
     <>
@@ -54,39 +154,62 @@ const Home: React.FC = () => {
       <Form>
         <p>I want to</p>
 
-        <Options>
-          <button className="wake-up" type="button">
+        <Options isErrored={isErrored}>
+          <Option
+            selected={mode === 'wake up'}
+            className="wake-up"
+            type="button"
+            onClick={handleWakeUpClick}
+          >
             <img src={WakeUpImg} alt="Wake up" />
-          </button>
-          <button className="go-to-sleep" type="button">
+          </Option>
+          <Option
+            selected={mode === 'sleep'}
+            className="go-to-sleep"
+            type="button"
+            onClick={handleGoToSleepClick}
+          >
             <img src={GoToSleepImg} alt="Go to sleep" />
-          </button>
+          </Option>
         </Options>
 
         <p>at</p>
 
         <div className="clock-buttons">
-          <button className="red" type="button" onClick={handleHourClick} />
-          <button
+          <AlarmButton
+            isPressed={buttonsPressed[0]}
+            className="red"
+            type="button"
+            onClick={handleHourClick}
+          />
+          <AlarmButton
+            isPressed={buttonsPressed[1]}
             className="orange"
             type="button"
             onClick={handleMinuteClick}
           />
         </div>
 
-        <div className="clock-numbers">
-          <img className="hour-left" src={Zero} alt="Hour" />
-          <img className="hour-right" src={Zero} alt="Hour" />
-          <img className="minute-left" src={Zero} alt="Minute" />
-          <img className="minute-right" src={Zero} alt="Minute" />
-          <img className="day-period" src={PM} alt="Day Period" />
-        </div>
+        <Alarm
+          schedule={hours + minutes}
+          dayPeriod={dayPeriod === 'am' ? 0 : 1}
+          isBigger
+        />
 
         <div className="reset-button">
-          <button className="grey" type="button" onClick={handlePeriodClick} />
+          <PeriodButton
+            isPressed={buttonsPressed[2]}
+            className="grey"
+            type="button"
+            onClick={handlePeriodClick}
+          />
         </div>
 
-        <button className="calculate-button" type="button">
+        <button
+          className="calculate-button"
+          type="button"
+          onClick={handleCalculateAlarms}
+        >
           Calculate
         </button>
       </Form>
@@ -102,17 +225,23 @@ const Home: React.FC = () => {
           beginning of another.” Considering this, to have a
           <span id="highlighted">&nbsp;good night&apos;s sleep&nbsp;</span>
           you should
-          <span id="highlighted">&nbsp; go to bed &nbsp;</span>
+          <span id="highlighted">
+            &nbsp;
+            {mode === 'wake up' ? 'go to bed' : 'wake up'}
+            &nbsp;
+          </span>
           at any of these times:
         </p>
       </Description>
-      <Schedules>
-        <Alarm schedule="1245" dayPeriod={1} />
-        <Alarm schedule="1245" dayPeriod={1} />
-        <Alarm schedule="1245" dayPeriod={1} />
-        <Alarm schedule="1245" dayPeriod={1} />
-        <Alarm schedule="1245" dayPeriod={1} />
-      </Schedules>
+      <Alarms>
+        {alarms.map(alarm => (
+          <Alarm
+            key={alarm.schedule}
+            schedule={alarm.schedule}
+            dayPeriod={alarm.period === 'am' ? 0 : 1}
+          />
+        ))}
+      </Alarms>
       <Contact>
         <FiGithub size={40} />
         <Pipe />

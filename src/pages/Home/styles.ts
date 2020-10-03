@@ -1,9 +1,21 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 
 import Alarm from '../../assets/clock/alarm.svg';
 import RedButton from '../../assets/clock/red-button.svg';
 import GreyButton from '../../assets/clock/grey-button.svg';
 import OrangeButton from '../../assets/clock/orange-button.svg';
+
+interface OptionProps {
+  selected: boolean;
+}
+
+interface OptionsProps {
+  isErrored: boolean;
+}
+
+interface AlarmButtonProps {
+  isPressed: boolean;
+}
 
 export const Logo = styled.div`
   display: flex;
@@ -17,11 +29,29 @@ export const Logo = styled.div`
   }
 `;
 
-export const Options = styled.div`
+export const Options = styled.div<OptionsProps>`
   display: flex;
   align-items: center;
   justify-content: center;
   margin: 1.2rem 0;
+
+  ${props =>
+    props.isErrored &&
+    css`
+      animation: error 0.5s;
+
+      @keyframes error {
+        0% {
+          transform: scale(1);
+        }
+        50% {
+          transform: scale(1.2);
+        }
+        100% {
+          transform: scale(1);
+        }
+      }
+    `}
 
   .wake-up,
   .go-to-sleep {
@@ -40,16 +70,20 @@ export const Options = styled.div`
     & + div {
       margin-left: 1.6rem;
     }
-
-    &:hover {
-      transform: scale(1.2);
-    }
   }
 
   .wake-up {
     background: #fffdd2;
     margin-right: 1.2rem;
   }
+`;
+
+export const Option = styled.button<OptionProps>`
+  ${props =>
+    props.selected &&
+    css`
+      transform: scale(1.2);
+    `}
 `;
 
 export const Form = styled.form`
@@ -74,12 +108,6 @@ export const Form = styled.form`
       border: 0;
       width: 4.8rem;
       height: 1.8rem;
-
-      transition: transform 0.2s;
-
-      &:hover {
-        transform: translateY(0.2rem);
-      }
     }
 
     .red {
@@ -144,11 +172,6 @@ export const Form = styled.form`
       position: relative;
       background: url(${GreyButton}) no-repeat center;
       background-size: 110%;
-      transition: transform 0.2s;
-
-      &:hover {
-        transform: translateX(-0.2rem);
-      }
     }
   }
 
@@ -167,6 +190,26 @@ export const Form = styled.form`
       transform: scale(1.2);
     }
   }
+`;
+
+export const AlarmButton = styled.button<AlarmButtonProps>`
+  ${props =>
+    props.isPressed &&
+    css`
+      transition: transform 0.2s;
+
+      transform: translateY(0.2rem);
+    `}
+`;
+
+export const PeriodButton = styled.button<AlarmButtonProps>`
+  ${props =>
+    props.isPressed &&
+    css`
+      transition: transform 0.2s;
+
+      transform: translateX(-0.2rem);
+    `}
 `;
 
 export const Description = styled.div`
@@ -188,12 +231,20 @@ export const Description = styled.div`
   }
 `;
 
-export const Schedules = styled.div`
+export const Alarms = styled.div`
   display: flex;
   align-items: center;
   margin-bottom: 1.6rem;
   flex-direction: column;
   justify-content: center;
+
+  @media (min-width: 1000px) {
+    flex-direction: row;
+
+    > div + div {
+      margin-left: 1.6rem;
+    }
+  }
 `;
 
 export const Contact = styled.footer`
