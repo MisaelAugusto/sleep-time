@@ -1,6 +1,5 @@
 import styled, { css } from 'styled-components';
 
-import Alarm from '../../assets/clock/alarm.svg';
 import RedButton from '../../assets/clock/red-button.svg';
 import GreyButton from '../../assets/clock/grey-button.svg';
 import OrangeButton from '../../assets/clock/orange-button.svg';
@@ -21,6 +20,17 @@ export const Container = styled.div`
   display: flex;
   align-items: center;
   flex-direction: column;
+  animation: fadeIn 0.5s;
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0.2;
+    }
+
+    to {
+      opacity: 1;
+    }
+  }
 `;
 
 export const Logo = styled.div`
@@ -168,17 +178,21 @@ export const Form = styled.form`
 
 export const CalculateButton = styled.button`
   border: 0;
-  width: 80%;
+  width: 60%;
   height: 3.6rem;
   color: #1c1c1c;
   font-size: 1.6rem;
-  margin: -1.2rem 0 1.6rem 0;
+  margin-top: -1.2rem;
   background: #e7cf09;
   border-radius: 0.8rem;
   transition: transform 0.2s;
 
   &:hover {
     transform: scale(1.1);
+  }
+
+  @media (min-width: 1000px) {
+    width: 24rem;
   }
 `;
 
@@ -213,6 +227,7 @@ export const Description = styled.div`
     color: #f1f1f1;
     font-size: 1.2rem;
     font-style: italic;
+    margin-top: 1.6rem;
     text-align: justify;
 
     span {
@@ -243,15 +258,19 @@ export const Contact = styled.footer`
   align-items: center;
   justify-content: center;
 
-  svg {
-    transition: transform 0.2s;
+  a {
+    color: #f1f1f1;
 
-    & + svg {
-      padding-left: 0.8rem;
-    }
+    svg {
+      transition: transform 0.2s;
 
-    &:hover {
-      transform: scale(1.2);
+      & + svg {
+        padding-left: 0.8rem;
+      }
+
+      &:hover {
+        transform: scale(1.2);
+      }
     }
   }
 `;

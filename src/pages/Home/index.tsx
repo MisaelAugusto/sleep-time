@@ -1,6 +1,5 @@
-/* eslint-disable no-param-reassign */
 /* eslint-disable jsx-a11y/control-has-associated-label */
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useState, useRef } from 'react';
 import { FiLinkedin, FiGithub, FiMail } from 'react-icons/fi';
 
 import Alarm from '../../components/Alarm';
@@ -30,6 +29,8 @@ interface Schedule {
 }
 
 const Home: React.FC = () => {
+  const bottomPage = useRef<HTMLDivElement>(null);
+
   const [mode, setMode] = useState('');
   const [hours, setHours] = useState('01');
   const [minutes, setMinutes] = useState('00');
@@ -145,6 +146,11 @@ const Home: React.FC = () => {
     }
 
     setAlarms(result);
+
+    setTimeout(() => {
+      // eslint-disable-next-line no-unused-expressions
+      bottomPage.current?.scrollIntoView({ behavior: 'smooth' });
+    }, 50);
   }, [mode, hours, minutes, dayPeriod]);
 
   return (
@@ -217,24 +223,26 @@ const Home: React.FC = () => {
         Calculate
       </CalculateButton>
       <Description>
-        <p>
-          “Normally people take between
-          <span id="highlighted">&nbsp;10 and 20 minutes&nbsp;</span>
-          to fall sleep. A good night&apos;s sleep consists of
-          <span id="highlighted">&nbsp;5 or 6 complete sleep cycles</span>
-          These cycles last an average of
-          <span id="highlighted">&nbsp;90 minutes&nbsp;</span>
-          and the ideal is to wake up between the end of one cycle and the
-          beginning of another.” Considering this, to have a
-          <span id="highlighted">&nbsp;good night&apos;s sleep&nbsp;</span>
-          you should
-          <span id="highlighted">
-            &nbsp;
-            {mode === 'wake up' ? 'go to bed' : 'wake up'}
-            &nbsp;
-          </span>
-          at any of these times:
-        </p>
+        {alarms.length > 0 && (
+          <p>
+            “Normally people take between
+            <span id="highlighted">&nbsp;10 and 20 minutes&nbsp;</span>
+            to fall sleep. A good night&apos;s sleep consists of
+            <span id="highlighted">&nbsp;5 or 6 complete sleep cycles</span>
+            These cycles last an average of
+            <span id="highlighted">&nbsp;90 minutes&nbsp;</span>
+            and the ideal is to wake up between the end of one cycle and the
+            beginning of another.” Considering this, to have a
+            <span id="highlighted">&nbsp;good night&apos;s sleep&nbsp;</span>
+            you should
+            <span id="highlighted">
+              &nbsp;
+              {mode === 'wake up' ? 'go to bed' : 'wake up'}
+              &nbsp;
+            </span>
+            at any of these times:
+          </p>
+        )}
       </Description>
       <Alarms>
         {alarms.map(alarm => (
@@ -246,12 +254,31 @@ const Home: React.FC = () => {
         ))}
       </Alarms>
       <Contact>
-        <FiGithub size={40} />
+        <a
+          href="https://github.com/MisaelAugusto/"
+          target="_blank"
+          rel="noreferrer"
+        >
+          <FiGithub size={40} />
+        </a>
         <Pipe />
-        <FiMail size={40} />
+        <a
+          href="https://mail.google.com/mail/u/0/?view=cm&fs=1&to=misael.costa@ccc.ufcg.edu.br&su=(Feedback or Support) for 'Sleep Time'&tf=1"
+          target="_blank"
+          rel="noreferrer"
+        >
+          <FiMail size={40} />
+        </a>
         <Pipe />
-        <FiLinkedin size={40} />
+        <a
+          href="https://www.linkedin.com/in/misael-augusto-b04073192/"
+          target="_blank"
+          rel="noreferrer"
+        >
+          <FiLinkedin size={40} />
+        </a>
       </Contact>
+      <div ref={bottomPage} />
     </Container>
   );
 };
