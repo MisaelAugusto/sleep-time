@@ -254,27 +254,15 @@ const Home: React.FC = () => {
         ))}
       </Alarms>
       <Contact>
-        <a
-          href="https://github.com/MisaelAugusto/"
-          target="_blank"
-          rel="noreferrer"
-        >
+        <a href="https://github.com/MisaelAugusto/">
           <FiGithub size={40} />
         </a>
         <Pipe />
-        <a
-          href="https://mail.google.com/mail/u/0/?view=cm&fs=1&to=misael.costa@ccc.ufcg.edu.br&su=(Feedback or Support) for 'Sleep Time'&tf=1"
-          target="_blank"
-          rel="noreferrer"
-        >
+        <a href="https://mail.google.com/mail/u/0/?view=cm&fs=1&to=misael.costa@ccc.ufcg.edu.br&su=(Feedback or Support) for 'Sleep Time'&tf=1">
           <FiMail size={40} />
         </a>
         <Pipe />
-        <a
-          href="https://www.linkedin.com/in/misael-augusto-b04073192/"
-          target="_blank"
-          rel="noreferrer"
-        >
+        <a href="https://www.linkedin.com/in/misael-augusto-b04073192/">
           <FiLinkedin size={40} />
         </a>
       </Contact>
