@@ -10,8 +10,10 @@ import WakeUpImg from '../../assets/wake-up.png';
 import GoToSleepImg from '../../assets/sleep.png';
 
 import {
+  Container,
   Logo,
   Form,
+  CalculateButton,
   AlarmButton,
   PeriodButton,
   Contact,
@@ -146,7 +148,7 @@ const Home: React.FC = () => {
   }, [mode, hours, minutes, dayPeriod]);
 
   return (
-    <>
+    <Container>
       <Logo>
         <img src={LogoImg} alt="SleepTime Logo" />
         <p>Sleeping well is growing healthy</p>
@@ -175,44 +177,45 @@ const Home: React.FC = () => {
 
         <p>at</p>
 
-        <div className="clock-buttons">
-          <AlarmButton
-            isPressed={buttonsPressed[0]}
-            className="red"
-            type="button"
-            onClick={handleHourClick}
+        <div className="clock-input">
+          <div className="clock-buttons">
+            <AlarmButton
+              isPressed={buttonsPressed[0]}
+              className="red"
+              type="button"
+              onClick={handleHourClick}
+            />
+            <AlarmButton
+              isPressed={buttonsPressed[1]}
+              className="orange"
+              type="button"
+              onClick={handleMinuteClick}
+            />
+          </div>
+
+          <Alarm
+            schedule={hours + minutes}
+            dayPeriod={dayPeriod === 'am' ? 0 : 1}
+            isBigger
           />
-          <AlarmButton
-            isPressed={buttonsPressed[1]}
-            className="orange"
-            type="button"
-            onClick={handleMinuteClick}
-          />
+
+          <div className="reset-button">
+            <PeriodButton
+              isPressed={buttonsPressed[2]}
+              className="grey"
+              type="button"
+              onClick={handlePeriodClick}
+            />
+          </div>
         </div>
-
-        <Alarm
-          schedule={hours + minutes}
-          dayPeriod={dayPeriod === 'am' ? 0 : 1}
-          isBigger
-        />
-
-        <div className="reset-button">
-          <PeriodButton
-            isPressed={buttonsPressed[2]}
-            className="grey"
-            type="button"
-            onClick={handlePeriodClick}
-          />
-        </div>
-
-        <button
-          className="calculate-button"
-          type="button"
-          onClick={handleCalculateAlarms}
-        >
-          Calculate
-        </button>
       </Form>
+      <CalculateButton
+        className="calculate-button"
+        type="button"
+        onClick={handleCalculateAlarms}
+      >
+        Calculate
+      </CalculateButton>
       <Description>
         <p>
           “Normally people take between
@@ -249,7 +252,7 @@ const Home: React.FC = () => {
         <Pipe />
         <FiLinkedin size={40} />
       </Contact>
-    </>
+    </Container>
   );
 };
 
