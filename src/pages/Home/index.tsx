@@ -228,7 +228,7 @@ const Home: React.FC = () => {
             “Normally people take between
             <span id="highlighted">&nbsp;10 and 20 minutes&nbsp;</span>
             to fall sleep. A good night&apos;s sleep consists of
-            <span id="highlighted">&nbsp;5 or 6 complete sleep cycles</span>
+            <span id="highlighted">&nbsp;5 or 6 complete sleep cycles. </span>
             These cycles last an average of
             <span id="highlighted">&nbsp;90 minutes&nbsp;</span>
             and the ideal is to wake up between the end of one cycle and the
